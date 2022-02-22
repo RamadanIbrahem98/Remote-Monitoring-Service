@@ -5,9 +5,10 @@ import {
   GetHumidityResponse,
   CreateEntryRequest,
   CreateEntryResponse,
+  EmptyRequest,
 } from '../api';
 import { db } from '../database';
-import { ExpressHandler, Reading, Temp, humidity } from '../types';
+import { ExpressHandler, Reading } from '../types';
 
 export const newEntryHandler: ExpressHandler<
   CreateEntryRequest,
@@ -37,7 +38,7 @@ export const getTempHandler: ExpressHandler<
 > = async (req, res) => {
   const temperatures = await db.getTemperatures();
   if (!temperatures) {
-    return res.status(404);
+    return res.status(404).send();
   }
   return res.status(200).json({
     temperatures,
@@ -50,9 +51,19 @@ export const getHumidityHandler: ExpressHandler<
 > = async (req, res) => {
   const humidities = await db.getHumedities();
   if (!humidities) {
-    return res.status(404);
+    return res.status(404).send();
   }
   return res.status(200).json({
     humidities,
+  });
+};
+
+export const purgeHandler: ExpressHandler<EmptyRequest, EmptyRequest> = async (
+  req,
+  res,
+) => {
+  await db.purge();
+  return res.status(200).json({
+    success: true,
   });
 };

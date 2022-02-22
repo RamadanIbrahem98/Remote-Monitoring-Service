@@ -60,4 +60,8 @@ export class sqlDatabase implements Datastore {
 
     return result.length > 1 ? result.slice(1) : undefined;
   }
+
+  async purge(): Promise<void> {
+    await this.db.run('DELETE FROM readings');
+  }
 }

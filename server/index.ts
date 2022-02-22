@@ -1,9 +1,11 @@
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
+import cors from 'cors';
 import { initDb } from './database';
 import {
   newEntryHandler,
   getTempHandler,
   getHumidityHandler,
+  purgeHandler,
 } from './handlers/sensorsHandler';
 
 (async () => {
@@ -12,6 +14,7 @@ import {
   const app = express();
 
   app.use(express.json());
+  app.use(cors());
 
   const requestLoggerMiddleware: RequestHandler = (req, res, next) => {
     console.log(req.method, req.path, '- body:', req.body);
@@ -25,6 +28,8 @@ import {
   app.get('/readings/temp', getTempHandler);
 
   app.get('/readings/humidity', getHumidityHandler);
+
+  app.get('/readings/purge', purgeHandler);
 
   app.use('*', (req, res) => {
     res.status(404).json({

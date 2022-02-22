@@ -16,3 +16,5 @@ export interface CreateEntryRequest {
   humidity: number;
 }
 export interface CreateEntryResponse {}
+
+export interface EmptyRequest {}
