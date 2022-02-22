@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "nodemon index.ts"
+    "build": "tsc --build && cp -r ./database/migrations ./dist/database/migrations",
+    "clean": "rm -rf ./dist",
+    "start": "node ./dist/index.js",
+    "dev": "nodemon index.ts"
   },
   "keywords": [],
   "author": "Ramadan Ibrahem",
