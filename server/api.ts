@@ -1,11 +1,15 @@
 import { Temp, humidity } from './types';
 
-export interface GetTempRequest {}
+export interface GetTempRequest {
+  timestamp: number;
+}
 export interface GetTempResponse {
   temperatures: Temp[];
 }
 
-export interface GetHumidityRequest {}
+export interface GetHumidityRequest {
+  timestamp: number;
+}
 export interface GetHumidityResponse {
   humidities: humidity[];
 }
