@@ -29,10 +29,11 @@ export class sqlDatabase implements Datastore {
     );
   }
 
-  async getTemperatures(): Promise<Temp[] | undefined> {
+  async getTemperatures(timestamp: number): Promise<Temp[] | undefined> {
     const result = [{ timestamp: '', temperature: 0 }];
     await this.db.each(
-      'SELECT timestamp, temperature FROM readings ORDER BY timestamp DESC LIMIT 100',
+      'SELECT timestamp, temperature FROM readings WHERE timestamp > ? ORDER BY timestamp ASC',
+      timestamp,
       (err, row) => {
         if (err) {
           throw err;
@@ -45,10 +46,11 @@ export class sqlDatabase implements Datastore {
     return result.length > 1 ? result.slice(1) : undefined;
   }
 
-  async getHumedities(): Promise<humidity[] | undefined> {
+  async getHumedities(timestamp: number): Promise<humidity[] | undefined> {
     const result = [{ timestamp: '', humidity: 0 }];
     await this.db.each(
-      'SELECT timestamp, humidity FROM readings ORDER BY timestamp DESC LIMIT 100',
+      'SELECT timestamp, humidity FROM readings WHERE timestamp > ORDER BY timestamp ASC',
+      timestamp,
       (err, row) => {
         if (err) {
           throw err;

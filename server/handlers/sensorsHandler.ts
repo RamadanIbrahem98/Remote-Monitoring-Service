@@ -36,7 +36,9 @@ export const getTempHandler: ExpressHandler<
   GetTempRequest,
   GetTempResponse
 > = async (req, res) => {
-  const temperatures = await db.getTemperatures();
+  const temperatures = await db.getTemperatures(
+    req.body.timestamp ? req.body.timestamp : 0,
+  );
   if (!temperatures) {
     return res.status(404).send();
   }
@@ -49,7 +51,9 @@ export const getHumidityHandler: ExpressHandler<
   GetHumidityRequest,
   GetHumidityResponse
 > = async (req, res) => {
-  const humidities = await db.getHumedities();
+  const humidities = await db.getHumedities(
+    req.body.timestamp ? req.body.timestamp : 0,
+  );
   if (!humidities) {
     return res.status(404).send();
   }
