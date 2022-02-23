@@ -18,6 +18,18 @@ class MainWindow(qtw.QMainWindow):
         self.ui.actionClose.triggered.connect(self.close)
         self.ui.actionNew.triggered.connect(self.new_instance)
 
+        self.timer = qtc.QTimer()
+        self.pen = pg.mkPen(color=(255, 0, 0), width=1)
+        self.ui.temp_graph.setBackground('w')
+        self.ui.temp_graph.showGrid(x=True, y=True)
+        self.ui.temp_graph.setLabel('left', 'Temperature', units='°C')
+        self.ui.temp_graph.setLabel('bottom', 'Time', units='timestamp')
+
+        self.ui.humidity_graph.setBackground('w')
+        self.ui.humidity_graph.showGrid(x=True, y=True)
+        self.ui.humidity_graph.setLabel('left', 'Humidity', units='%')
+        self.ui.humidity_graph.setLabel('bottom', 'Time', units='timestamp')
+
     def new_instance(self) -> None:
         self.child_window = MainWindow()
         self.child_window.show()
