@@ -2,7 +2,7 @@ import sys
 import pyqtgraph as pg
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
-from API.api import fetch_data
+from API.api import fetch_data, set_alarm, get_alarm
 
 from GUI.GUI import Ui_RemoteMonitoringService
 
@@ -38,6 +38,7 @@ class MainWindow(qtw.QMainWindow):
             lambda: self.plot_sensor("temp"))
         self.ui.humidity_btn.clicked.connect(
             lambda: self.plot_sensor("humidity"))
+        self.ui.alarm_btn.clicked.connect(self.fire_alarm)
         self.ui.reset_btn.clicked.connect(self.reset_graphs)
 
         self.graph = {"temp": {"graph": self.ui.temp_graph, "pen": self.temp_pen, "timer": self.temp_timer, "data": [], "time": [], "timestamp": 0, "name": "Temperature", "unit": "°C"},
@@ -45,6 +46,8 @@ class MainWindow(qtw.QMainWindow):
 
         self.upToDatePlots = {"temp": None, "humidity": None}
         self.pointsToAppend = {"temp": 0, "humidity": 0}
+
+        self.alarm_is_set = 0
 
     def new_instance(self) -> None:
         self.child_window = MainWindow()
@@ -101,6 +104,17 @@ class MainWindow(qtw.QMainWindow):
             self.plot_sensor(channel)
 
         self.upToDatePlots[channel].setData(xaxis, yaxis)
+
+    def fire_alarm(self) -> None:
+        is_set = get_alarm()
+        if is_set == 0:
+            self.ui.alarm_btn.setText("Reset Alarm")
+            self.alarm_is_set = 1
+        else:
+            self.ui.alarm_btn.setText("Fire Alarm")
+            self.alarm_is_set = 0
+
+        set_alarm(self.alarm_is_set)
 
     def reset_graphs(self) -> None:
         for graphType, graphComponents in self.graph.items():
