@@ -1,6 +1,7 @@
 import requests
 
-def data_init(sensor: str, timestamp: int = 0):
+
+def fetch_data(sensor: str, timestamp: int = 0):
     url = 'https://remote-monitoring-api.herokuapp.com/readings/'
     readings = 'temperatures'
     if sensor == 'temp':
@@ -11,7 +12,9 @@ def data_init(sensor: str, timestamp: int = 0):
     else:
         return []
 
-    response = requests.get(url,json={"timestamp": timestamp})
+    response = requests.get(url, json={"timestamp": timestamp})
+
+    if response.status_code != 200:
+        return []
 
     return response.json()[readings]
-    
