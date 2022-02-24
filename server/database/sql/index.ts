@@ -49,7 +49,7 @@ export class sqlDatabase implements Datastore {
   async getHumedities(timestamp: number): Promise<humidity[] | undefined> {
     const result = [{ timestamp: '', humidity: 0 }];
     await this.db.each(
-      'SELECT timestamp, humidity FROM readings WHERE timestamp > ORDER BY timestamp ASC',
+      'SELECT timestamp, humidity FROM readings WHERE timestamp > ? ORDER BY timestamp ASC',
       timestamp,
       (err, row) => {
         if (err) {
