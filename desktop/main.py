@@ -2,18 +2,15 @@ import sys
 import pyqtgraph as pg
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
-from PyQt5 import QtGui as qtg
-from numpy import random
-import requests
 from API.api import fetch_data
 
-from GUI.GUI import Ui_MainWindow
+from GUI.GUI import Ui_RemoteMonitoringService
 
 
 class MainWindow(qtw.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_RemoteMonitoringService()
         self.ui.setupUi(self)
 
         self.show()
@@ -41,6 +38,7 @@ class MainWindow(qtw.QMainWindow):
             lambda: self.plot_sensor("temp"))
         self.ui.humidity_btn.clicked.connect(
             lambda: self.plot_sensor("humidity"))
+        self.ui.reset_btn.clicked.connect(self.reset_graphs)
 
         self.graph = {"temp": {"graph": self.ui.temp_graph, "pen": self.temp_pen, "timer": self.temp_timer, "data": [], "time": [], "timestamp": 0, "name": "Temperature", "unit": "°C"},
                       "humidity": {"graph": self.ui.humidity_graph, "pen": self.humidity_pen, "timer": self.humidity_timer, "data": [], "time": [], "timestamp": 0, "name": "Humidity", "unit": "%"}}
@@ -81,8 +79,7 @@ class MainWindow(qtw.QMainWindow):
                 continue
             else:
                 graphComponents["timer"].stop()
-        print('data', self.graph[channel]["data"],
-              'time', self.graph[channel]["time"])
+
         self.upToDatePlots[channel] = self.graph[channel]["graph"].plot(
             self.graph[channel]["time"], self.graph[channel]["data"], name=self.graph[channel]["name"], pen=self.graph[channel]["pen"])
         self.graph[channel]["graph"].plotItem.setLimits(
@@ -104,6 +101,16 @@ class MainWindow(qtw.QMainWindow):
             self.plot_sensor(channel)
 
         self.upToDatePlots[channel].setData(xaxis, yaxis)
+
+    def reset_graphs(self) -> None:
+        for graphType, graphComponents in self.graph.items():
+            graphComponents["timer"].stop()
+            graphComponents["data"] = []
+            graphComponents["time"] = []
+            graphComponents["timestamp"] = 0
+            self.upToDatePlots[graphType] = None
+            self.pointsToAppend[graphType] = 0
+            graphComponents["graph"].clear()
 
 
 if __name__ == '__main__':
