@@ -49,6 +49,8 @@ class MainWindow(qtw.QMainWindow):
 
         self.alarm_is_set = 0
 
+        self.first = False
+
     def new_instance(self) -> None:
         self.child_window = MainWindow()
         self.child_window.show()
@@ -58,6 +60,9 @@ class MainWindow(qtw.QMainWindow):
 
         temp = fetch_data(channel, self.graph[channel]["timestamp"])
         if temp:
+            if self.first:
+                self.first = True
+                temp = temp[-1]
             for i in range(len(temp)):
                 list_of_readings.append(
                     temp[i]["temperature" if channel == "temp" else "humidity"])
@@ -86,10 +91,10 @@ class MainWindow(qtw.QMainWindow):
         self.upToDatePlots[channel] = self.graph[channel]["graph"].plot(
             self.graph[channel]["time"], self.graph[channel]["data"], name=self.graph[channel]["name"], pen=self.graph[channel]["pen"])
         self.graph[channel]["graph"].plotItem.setLimits(
-            xMin=0, xMax=100, yMin=min(self.graph[channel]["data"]), yMax=max(self.graph[channel]["data"]))
+            xMin=0, xMax=100, yMin=10, yMax=35)
 
-        self.pointsToAppend[channel] = 0
-        self.graph[channel]["timer"].setInterval(1000)
+        self.pointsToAppend[channel] = 1
+        self.graph[channel]["timer"].setInterval(2000)
         self.graph[channel]["timer"].timeout.connect(
             lambda: self.updatePlot(channel))
         self.graph[channel]["timer"].start()
@@ -103,6 +108,8 @@ class MainWindow(qtw.QMainWindow):
 
             self.plot_sensor(channel)
 
+        self.graph[channel]["graph"].plotItem.setXRange(
+            max(xaxis, default=0)-10.0, max(xaxis, default=0))
         self.upToDatePlots[channel].setData(xaxis, yaxis)
 
     def fire_alarm(self) -> None:
