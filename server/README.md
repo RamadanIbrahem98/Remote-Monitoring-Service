@@ -10,7 +10,9 @@ This contains the list of all api endpoints and database configurations.
 get the temperature readings
 <br><br>
 <pre>
-req body {}
+req body {
+  "timestamp": "123456788" // time stamp of the last reading fetched (default: 0)
+}
 res body {
   "termperatures": [
     {
@@ -28,7 +30,9 @@ res body {
 get the humidity readings
 <br><br>
 <pre>
-req body {}
+req body {
+  "timestamp": "123456788" // time stamp of the last reading fetched (default: 0)
+}
 res body {
   "humidities": [
     {
@@ -61,8 +65,8 @@ res body {}
 get the alarm status
 <br><br>
 <pre>
-body {}
-res {
+req body {}
+res body {
   "alarm": 1
 }
 </pre>
