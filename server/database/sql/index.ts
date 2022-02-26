@@ -66,4 +66,13 @@ export class sqlDatabase implements Datastore {
   async purge(): Promise<void> {
     await this.db.run('DELETE FROM readings');
   }
+
+  async setAlarm(is_set: number): Promise<void> {
+    await this.db.run('UPDATE alarm SET is_set = ?', is_set);
+  }
+
+  async getAlarm(): Promise<number> {
+    const res = await this.db.get('SELECT is_set FROM alarm WHERE id = 1');
+    return res.is_set;
+  }
 }

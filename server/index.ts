@@ -6,6 +6,8 @@ import {
   getTempHandler,
   getHumidityHandler,
   purgeHandler,
+  getAlarmHandler,
+  setAlarmHandler,
 } from './handlers/sensorsHandler';
 
 (async () => {
@@ -30,6 +32,10 @@ import {
   app.get('/readings/humidity', getHumidityHandler);
 
   app.get('/readings/purge', purgeHandler);
+
+  app.get('/control/alarm', getAlarmHandler);
+
+  app.post('/control/alarm', setAlarmHandler);
 
   app.use('*', (req, res) => {
     res.status(404).json({

@@ -6,6 +6,8 @@ import {
   CreateEntryRequest,
   CreateEntryResponse,
   EmptyRequest,
+  AlarmRequest,
+  AlarmResponse,
 } from '../api';
 import { db } from '../database';
 import { ExpressHandler, Reading } from '../types';
@@ -69,5 +71,23 @@ export const purgeHandler: ExpressHandler<EmptyRequest, EmptyRequest> = async (
   await db.purge();
   return res.status(200).json({
     success: true,
+  });
+};
+
+export const setAlarmHandler: ExpressHandler<
+  AlarmRequest,
+  AlarmResponse
+> = async (req, res) => {
+  await db.setAlarm(req.body.is_set ? req.body.is_set : 0);
+  return res.status(200).json();
+};
+
+export const getAlarmHandler: ExpressHandler<
+  AlarmRequest,
+  AlarmResponse
+> = async (req, res) => {
+  const is_set = await db.getAlarm();
+  return res.status(200).json({
+    alarm: is_set,
   });
 };

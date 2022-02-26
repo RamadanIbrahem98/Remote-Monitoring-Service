@@ -22,3 +22,11 @@ export interface CreateEntryRequest {
 export interface CreateEntryResponse {}
 
 export interface EmptyRequest {}
+
+export interface AlarmRequest {
+  is_set: number;
+}
+
+export interface AlarmResponse {
+  alarm: number;
+}
